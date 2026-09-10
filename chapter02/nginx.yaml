@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-custom
+  labels: 
+    app: nginx-custom
+spec:
+  imagePullSecrets:
+  - name: regcred
+  containers:
+  - name: nginx-custom
+    image: manabujahana/chapter01:1.0.0
+    ports:
+    - containerPort: 8080

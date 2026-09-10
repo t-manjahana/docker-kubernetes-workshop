@@ -1,0 +1,27 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+- role: control-plane
+  kubeadmConfigPatches:
+  - |
+    kind: InitConfiguration
+    nodeRegistration:
+      kubeletExtraArgs:
+        node-labels: "ingress-ready=true"
+  extraPortMappings:
+  # 1. HTTP 用 (Web)
+  - containerPort: 80
+    hostPort: 80
+    protocol: TCP
+  # 2. HTTPS 用 (Web)
+  - containerPort: 443
+    hostPort: 443
+    protocol: TCP
+  # 3. FTP 制御用 (NodePort: 30021)
+  - containerPort: 30021
+    hostPort: 30021
+    protocol: TCP
+  # 4. FTP パッシブデータ用 (NodePort: 31000)
+  - containerPort: 31000
+    hostPort: 31000
+    protocol: TCP

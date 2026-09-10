@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-ingress
+  namespace: dev
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx        # ← ingress のCLASSを指定
+  tls:
+  - hosts:
+    - localhost
+    secretName: tls-secret       # ← 作成した Secret 名
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: web-php-service
+            port:
+              number: 80
+

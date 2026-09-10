@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-php
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-php
+  template:
+    metadata:
+      labels:
+        app: web-php
+    spec:
+      containers:
+      # 1. Nginx コンテナ
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: nginx.conf
+        - name: app-volume
+          mountPath: /var/www/html
+
+      # 2. PHP-FPM コンテナ
+      - name: php
+        image: manabujahana/training-sample:1.0.1
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: app-config
+        env:
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: MYSQL_PASSWORD
+        volumeMounts:
+        - name: app-volume
+          mountPath: /var/www/html
+
+      volumes:
+      - name: config-volume
+        configMap:
+          name: app-config
+      - name: app-volume
+        hostPath:
+          path: /var/www/html
+          type: Directory
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-php-service
+  namespace: dev
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    app: web-php
+

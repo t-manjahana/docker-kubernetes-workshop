@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx   # ← template の labels と一致している必要がある
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: nginx
+        image: manabujahana/chapter01:1.0.0
+        env:
+        - name: TRIGGER_UPDATE
+          value: "v2"
+        ports:
+        - containerPort: 80

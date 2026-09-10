@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: dev
+
+# 既存のリソースファイルを指定
+resources:
+  - 00-configmap.yaml
+  - 01-mysql.yaml
+  - 02-web-php.yaml
+  - 03-ingress.yaml
+
+# Secret の自動生成定義
+secretGenerator:
+  # 1. DB用 Secret (app-secrets)
+  - name: app-secrets
+    envs:
+      - .env.secret
+    type: Opaque
+
+  # 2. Ingress 用 TLS 認証用 Secret (tls-seret)
+  - name: tls-secret
+    files:
+      - tls.crt
+      - tls.key
+    type: kubernetes.io/tls
