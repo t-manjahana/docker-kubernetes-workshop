@@ -1,0 +1,7 @@
+{
+    "auths": {
+        "https://index.docker.io/v1/": {
+            "auth": "<Base64 エンコードした Access Token を設置>"
+        }
+    }
+}
