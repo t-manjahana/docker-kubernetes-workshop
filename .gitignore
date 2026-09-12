@@ -2,3 +2,4 @@
 .env.*
 bookman
 .git
+manifest/config.json
