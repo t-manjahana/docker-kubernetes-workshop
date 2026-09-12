@@ -1,0 +1,7 @@
+{
+    "auths": {
+        "https://index.docker.io/v1/": {
+            "auth": "eyJhdXRocyI6eyJodHRwczovL2luZGV4LmRvY2tlci5pby92MS8iOnsidXNlcm5hbWUiOiJtYW5hYnVqYWhhbmEiLCJwYXNzd29yZCI6ImRja3JfcGF0X1JWeHJ1Z2xXczZVWkFVb3Z3c0FIUGZfMkJ4USIsImVtYWlsIjoibWFuYWJ1LmphaGFuYUBnbWFpbC5jb20iLCJhdXRoIjoiYldGdVlXSjFhbUZvWVc1aE9tUmphM0pmY0dGMFgxSldlSEoxWjJ4WGN6WlZXa0ZWYjNaM2MwRklVR1pmTWtKNFVRPT0ifX19"
+        }
+    }
+}

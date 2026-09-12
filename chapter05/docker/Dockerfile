@@ -5,10 +5,6 @@ WORKDIR /app
 COPY bookman/composer.json bookman/composer.lock ./
 RUN composer install --no-dev --no-scripts --prefer-dist --no-autoloader
 
-# 全ソースコードをコピーして autoloader を最適化生成
-COPY bookman/ .
-RUN composer dump-autoload --optimize
-
 # --- Stage 2: Production Run (PHP-FPM 実行環境) ---
 FROM php:8.3-fpm-alpine
 

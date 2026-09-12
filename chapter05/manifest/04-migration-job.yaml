@@ -1,0 +1,34 @@
+# manifest/04-migration-job.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: app-migration
+  namespace: dev
+spec:
+  # ジョブ完了後に失敗したPodを自動クリーンアップする設定（必要に応じて調整）
+  ttlSecondsAfterFinished: 60
+  template:
+    spec:
+      containers:
+      - name: migration
+        image: app-image
+        imagePullPolicy: IfNotPresent
+        command: ["php", "artisan", "migrate", "--force"]
+        envFrom:
+          - configMapRef:
+              name: app-config
+        env:
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: MYSQL_PASSWORD
+        volumeMounts:
+        - name: app-volume
+          mountPath: /var/www/html
+      volumes:
+      - name: app-volume
+        hostPath:
+          path: /var/www/html
+          type: Directory
+      restartPolicy: OnFailure

@@ -9,6 +9,13 @@ resources:
   - 01-mysql.yaml
   - 02-web-php.yaml
   - 03-ingress.yaml
+  - 04-migration-job.yaml
+
+# イメージ名とタグの一括管理
+images:
+  - name: app-image
+    newName: manabujahana/training-sample
+    newTag: 1.0.1
 
 # Secret の自動生成定義
 secretGenerator:
@@ -18,7 +25,13 @@ secretGenerator:
       - .env.secret
     type: Opaque
 
-  # 2. Ingress 用 TLS 認証用 Secret (tls-seret)
+  # 2. Docker Registry用 Secret（dockerconfigjson）
+  - name: regcred
+    files:
+      - .dockerconfigjson=config.json
+    type: kubernetes.io/dockerconfigjson
+
+  # 3. Ingress 用 TLS 認証用 Secret (tls-seret)
   - name: tls-secret
     files:
       - tls.crt

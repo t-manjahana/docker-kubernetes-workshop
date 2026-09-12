@@ -1,26 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-deployment
+  name: hello-server
+  namespace: dev
   labels:
-    app: nginx
+    app: hello-server
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: nginx   # ← template の labels と一致している必要がある
+      app: hello-server
   template:
     metadata:
       labels:
-        app: nginx
+        app: hello-server
     spec:
       imagePullSecrets:
       - name: regcred
       containers:
-      - name: nginx
+      - name: hello-server
         image: manabujahana/chapter01:1.0.0
-        env:
-        - name: TRIGGER_UPDATE
-          value: "v2"
         ports:
         - containerPort: 80

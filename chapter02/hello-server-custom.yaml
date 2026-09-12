@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: nginx-custom
+  name: hello-server-custom
   labels: 
-    app: nginx-custom
+    app: hello-server-custom
 spec:
   imagePullSecrets:
-  - name: regcred
+  - name: regcred     # ← 作成した Secret 名を指定
   containers:
-  - name: nginx-custom
+  - name: hello-server-custom
     image: manabujahana/chapter01:1.0.0
     ports:
     - containerPort: 8080

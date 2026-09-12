@@ -13,13 +13,6 @@ spec:
       labels:
         app: web-php
     spec:
-      initContainers:
-      - name: init-permissions
-        image: busybox:latest
-        command: ["sh", "-c", "mkdir -p /var/www/html && chmod -R 777 /var/www/html"]
-        volumeMounts:
-        - name: app-volume
-          mountPath: /var/www/html
       containers:
       # 1. Nginx コンテナ
       - name: nginx
@@ -35,30 +28,17 @@ spec:
 
       # 2. PHP-FPM コンテナ
       - name: php
-        image: php:8.2-fpm
-        volumeMounts:
-        - name: app-volume
-          mountPath: /var/www/html
-
-      # 3. FTP コンテナ (サイドカーとして追加)
-      - name: ftp
-        image: delfer/alpine-ftp-server
+        image: app-image
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: app-config
         env:
-        - name: USERS
-          value: "ftpuser|Mj19770126|/var/www/html"
-        - name: ADDRESS
-          value: "127.0.0.1"
-        - name: MIN_PORT
-          value: "31000"
-        - name: MAX_PORT
-          value: "31000"
-        - name: PASV_MIN_PORT
-          value: "31000"
-        - name: PASV_MAX_PORT
-          value: "31000"
-        ports:
-        - containerPort: 21
-        - containerPort: 31000
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: app-secrets
+                key: MYSQL_PASSWORD
         volumeMounts:
         - name: app-volume
           mountPath: /var/www/html
@@ -68,7 +48,9 @@ spec:
         configMap:
           name: app-config
       - name: app-volume
-        emptyDir: {}
+        hostPath:
+          path: /var/www/html
+          type: Directory
 ---
 apiVersion: v1
 kind: Service
@@ -76,19 +58,11 @@ metadata:
   name: web-php-service
   namespace: dev
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
   - name: http
     port: 80
     targetPort: 80
-  - name: ftp
-    port: 21
-    targetPort: 21
-    nodePort: 30021
-  - name: pasv
-    port: 31000
-    targetPort: 31000
-    nodePort: 31000
   selector:
     app: web-php
 

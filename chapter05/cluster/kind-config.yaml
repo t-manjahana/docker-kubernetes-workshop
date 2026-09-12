@@ -17,11 +17,7 @@ nodes:
   - containerPort: 443
     hostPort: 443
     protocol: TCP
-  # 3. FTP 制御用 (NodePort: 30021)
-  - containerPort: 30021
-    hostPort: 30021
-    protocol: TCP
-  # 4. FTP パッシブデータ用 (NodePort: 31000)
-  - containerPort: 31000
-    hostPort: 31000
-    protocol: TCP
+  extraMounts:
+  # ホスト側の ./bookman を kind ノードの /var/www/html にマウント
+  - hostPath: ./bookman
+    containerPath: /var/www/html
