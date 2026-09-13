@@ -9,23 +9,13 @@ build:
       docker:
         dockerfile: docker/Dockerfile
         buildArgs:
-          APP_DIR: "bookman"    # Skaffold が Docker Image を build する際の APP_DIR を指定
+          APP_DIR: "{{.APP_DIR}}"    # Skaffold が Docker Image を build する際の APP_DIR を指定
       sync:
         manual:
-          # bookman ディレクトリ配下の変更をコンテナ内の /var/www/html へ直接同期
-          - src: 'bookman/**/*.php'
+          # 同期対象ディレクトリ配下の変更をコンテナ内の /var/www/html へ直接同期
+          - src: '{{.APP_DIR}}/**/*'
             dest: /var/www/html
-          - src: 'bookman/**/*.blade.php'
-            dest: /var/www/html
-          - src: 'bookman/**/*.css'
-            dest: /var/www/html
-          - src: 'bookman/**/*.js'
-            dest: /var/www/html
-          - src: 'bookman/**/*.json'
-            dest: /var/www/html
-          # ビルド後の public 配下も同期対象に含める
-          - src: 'bookman/public/**/*'
-            dest: /var/www/html
+            strip: '{{.APP_DIR}}/'
 manifests:
   kustomize:
     paths:
