@@ -15,7 +15,7 @@ resources:
 images:
   - name: app-image
     newName: manabujahana/training-sample
-    newTag: 1.0.1
+    newTag: 1.0.2
 
 # Secret の自動生成定義
 secretGenerator:

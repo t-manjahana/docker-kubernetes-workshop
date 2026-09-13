@@ -10,15 +10,17 @@ build:
         dockerfile: docker/Dockerfile
       sync:
         infer:
-          - "**/*.php"   # PHP ファイルの変更を検知して Pod 内に自動同期
+          - "**/*.php"        # PHP ファイルの変更を検知して Pod 内に自動同期
           - "**/*.blade.php"
           - "**/*.css"
           - "**/*.js"
           - "**/*.json"
+      buildArgs:
+        APP_DIR: "bookman"    # Skaffold が Docker Image を build する際の APP_DIR を指定
 manifests:
   kustomize:
     paths:
-    - manifest/ # k8s ディレクトリ配下のマニフェストファイル群（環境に合わせて調整）
+    - manifest/               # k8s ディレクトリ配下のマニフェストファイル群（環境に合わせて調整）
 portForward:
   - resourceType: Service
     resourceName: web-php-service

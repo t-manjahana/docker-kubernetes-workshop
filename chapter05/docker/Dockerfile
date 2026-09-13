@@ -1,8 +1,13 @@
+ARG APP_DIR    # グローバルスコープでの定義
+
 FROM composer:2 AS builder
+
+ARG APP_DIR    # マルチビルドステージではステージが変わると ARG がリセットされるため、再宣言が必要
+
 WORKDIR /app
 
 # composer.json と composer.lock をコピーして依存関係をインストール
-COPY bookman/composer.json bookman/composer.lock ./
+COPY ${APP_DIR}/composer.json ${APP_DIR}/composer.lock ./
 RUN composer install --no-dev --no-scripts --prefer-dist --no-autoloader
 
 # --- Stage 2: Production Run (PHP-FPM 実行環境) ---
